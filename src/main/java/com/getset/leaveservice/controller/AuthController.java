@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.getset.leaveservice.dto.UserDataDTO;
@@ -36,14 +35,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/signin")
-	public String login(@RequestParam String username, @RequestParam String password) {
-		System.out.println("Entered To Sign In...." + username);
-		System.out.println("Entered To Sign In...." + password);
-		return userService.signin(username, password);
+	public String login(@RequestBody UserDataDTO user) {
+		return userService.signin(user.getUserName(), user.getPassword());
 	}
 
 	@PostMapping(path = "/signup")
-	public String signup(@RequestBody UserDataDTO user) {
+	public User signup(@RequestBody UserDataDTO user) {
 		return userService.signup(modelMapper.map(user, User.class));
 	}
 

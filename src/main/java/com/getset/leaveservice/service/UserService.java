@@ -37,11 +37,12 @@ public class UserService {
 		}
 	}
 
-	public String signup(User user) {
+	public User signup(User user) {
 		if (!userRepository.existsByUserName(user.getUserName())) {
 			user.setPassword(passwordEncoder.encode(user.getPassword()));
 			userRepository.save(user);
-			return jwtTokenProvider.createToken(user.getUserName());
+			jwtTokenProvider.createToken(user.getUserName());
+			return user;
 		} else {
 			throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
 		}

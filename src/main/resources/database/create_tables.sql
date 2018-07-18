@@ -98,4 +98,30 @@ CREATE TABLE `user_role` (
 
 
 
+--
+-- Table structure for table `attendance`
+--
+
+DROP TABLE IF EXISTS `attendance`;
+
+CREATE TABLE `attendance` (
+  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `EMAIL_ID` varchar(55) NOT NULL,
+  `LOG_IN` datetime DEFAULT NULL,
+  `LOG_OUT` datetime DEFAULT NULL,
+  `LOG_IN_LAT` varchar(55) DEFAULT NULL,
+  `LOG_IN_LAG` varchar(55) DEFAULT NULL,
+  `LOG_OUT_LAT` varchar(55) DEFAULT NULL,
+  `LOG_OUT_LAG` varchar(55) DEFAULT NULL,
+  `CREATED_BY` varchar(45) DEFAULT NULL,
+  `CREATED_ON` datetime NULL DEFAULT NULL,
+  `UPDATED_BY` varchar(45) DEFAULT NULL,
+  `UPDATED_ON` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+);
+
+
+
+
+
 

@@ -3,5 +3,6 @@
 	<persistence-unit name="leave-service">
 		<class>com.getset.leaveservice.entity.Organization</class>
 		<class>com.getset.leaveservice.entity.User</class>
+		<class>com.getset.leaveservice.entity.Attendance</class>
 	</persistence-unit>
 </persistence>
