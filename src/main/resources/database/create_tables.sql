@@ -4,7 +4,7 @@
 DROP TABLE IF EXISTS `user`;
 
 CREATE TABLE `user` (
-  `ID` VARCHAR(32) NOT NULL,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
   `USER_NAME` varchar(50) NOT NULL,
   `PASSWORD` varchar(60) NOT NULL,
   `FIRST_NAME` varchar(45) NOT NULL,
@@ -34,10 +34,11 @@ CREATE TABLE `user` (
 DROP TABLE IF EXISTS `organization`;
 
 CREATE TABLE `organization` (
-  `ID` VARCHAR(32) NOT NULL,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
   `NAME` varchar(55) NOT NULL,
   `DESCRIPTION` varchar(255) DEFAULT NULL,
   `LOGO` varchar(255) DEFAULT NULL,
+  `SECRET_KEY` varchar(255) NOT NULL,
   `CREATED_BY` varchar(45) DEFAULT NULL,
   `CREATED_ON` datetime NULL DEFAULT NULL,
   `UPDATED_BY` varchar(45) DEFAULT NULL,
@@ -46,66 +47,87 @@ CREATE TABLE `organization` (
 );
 
 
---
--- Table structure for table `organization_user`
---
-
 DROP TABLE IF EXISTS `organization_user`;
 
+
+
 CREATE TABLE `organization_user` (
-  `ORG_ID` VARCHAR(32) NOT NULL,
-  `USER_ID` VARCHAR(32) NOT NULL,
-  `IS_PRIMARY` int(11) NULL,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
+  `ORG_ID` BIGINT NOT NULL,
+  `USER_ID` BIGINT NOT NULL,
   PRIMARY KEY (`ID`),
   CONSTRAINT `FK_ORG_ID_ORG_USER` FOREIGN KEY (`ORG_ID`) REFERENCES `organization` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
   CONSTRAINT `FK_USER_ID_ORG_USER` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+
 );
 
 
---
--- Table structure for table `role`
---
+----
+---- Table structure for table `role`
+----
+
 
 DROP TABLE IF EXISTS `role`;
 
 CREATE TABLE `role` (
-  `ID` VARCHAR(32) NOT NULL,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
   `ROLE_NAME` varchar(45) NOT NULL,
   `DISPLAY_NAME` varchar(255) NULL,
-  `CREATED_BY` varchar(45) NOT NULL,
-  `CREATED_ON` datetime NOT NULL,
-  `UPDATED_BY` varchar(45) NOT NULL,
-  `UPDATED_ON` datetime NOT NULL,
+  `CREATED_BY` varchar(45) DEFAULT NULL,
+  `CREATED_ON` datetime DEFAULT NULL,
+  `UPDATED_BY` varchar(45) DEFAULT NULL,
+  `UPDATED_ON` datetime DEFAULT NULL,
   PRIMARY KEY (`ID`)
 );
-
-
 --
--- Table structure for table `user_role`
 --
+--
+----
+---- Table structure for table `role`
+----
+--
+DROP TABLE IF EXISTS `organization sites`;
 
+CREATE TABLE `organization_sites` (
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
+  `ORG_ID` BIGINT NOT NULL,
+  `SITE_NAME` varchar(45) NOT NULL,
+  `SITE_DISPLAY_NAME` varchar(255) NULL,
+  `CREATED_BY` varchar(45) DEFAULT NULL,
+  `CREATED_ON` datetime DEFAULT NULL,
+  `UPDATED_BY` varchar(45) DEFAULT NULL,
+  `UPDATED_ON` datetime DEFAULT NULL,
+  PRIMARY KEY (`ID`),
+ CONSTRAINT `FK_ORG_ID_ORGANIZATION` FOREIGN KEY (`ORG_ID`) REFERENCES `organization` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
+
+);
+--
+--
+----
+---- Table structure for table `user_role`
+----
+--
 DROP TABLE IF EXISTS `user_role`;
 
 CREATE TABLE `user_role` (
-  `USER_ID` VARCHAR(32) NOT NULL,
-  `ROLE_ID` VARCHAR(32) NOT NULL,
-  `ORGANIZATION_ID` VARCHAR(32) NOT NULL,
-  CONSTRAINT `FK_USER_ROLE_ORGANIZATION` FOREIGN KEY (`ORGANIZATION_ID`) REFERENCES `organization` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
+  `USER_ID` BIGINT NOT NULL,
+  `ROLE_ID` BIGINT NOT NULL,
+  PRIMARY KEY (`ID`),
   CONSTRAINT `role_fk` FOREIGN KEY (`ROLE_ID`) REFERENCES `role` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  CONSTRAINT `user_fk` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  PRIMARY KEY (`ID`)
+  CONSTRAINT `user_fk` FOREIGN KEY (`USER_ID`) REFERENCES `user` (`ID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 );
-
-
-
 --
--- Table structure for table `attendance`
 --
+--
+----
+---- Table structure for table `attendance`
+----
 
 DROP TABLE IF EXISTS `attendance`;
 
 CREATE TABLE `attendance` (
-  `ID` int(11) NOT NULL AUTO_INCREMENT,
+  `ID` BIGINT NOT NULL AUTO_INCREMENT,
   `EMAIL_ID` varchar(55) NOT NULL,
   `LOG_IN` datetime DEFAULT NULL,
   `LOG_OUT` datetime DEFAULT NULL,
@@ -119,9 +141,9 @@ CREATE TABLE `attendance` (
   `UPDATED_ON` datetime NULL DEFAULT NULL,
   PRIMARY KEY (`ID`)
 );
-
-
-
-
-
-
+--
+--
+--
+--
+--
+--

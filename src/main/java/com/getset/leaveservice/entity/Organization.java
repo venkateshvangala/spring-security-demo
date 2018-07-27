@@ -1,8 +1,23 @@
 package com.getset.leaveservice.entity;
 
 import java.io.Serializable;
-import javax.persistence.*;
 import java.util.Date;
+import java.util.List;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 
 /**
@@ -15,7 +30,8 @@ public class Organization implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private long id;
 
 	@Column(name="CREATED_BY")
 	private String createdBy;
@@ -30,6 +46,9 @@ public class Organization implements Serializable {
 
 	private String name;
 
+	@Column(name="SECRET_KEY")
+	private String secretKey;
+
 	@Column(name="UPDATED_BY")
 	private String updatedBy;
 
@@ -37,14 +56,38 @@ public class Organization implements Serializable {
 	@Column(name="UPDATED_ON")
 	private Date updatedOn;
 
+	//bi-directional many-to-many association to User
+	@ManyToMany
+	@JsonIgnore
+	@JoinTable(
+		name="organization_user"
+		, joinColumns={
+			@JoinColumn(name="ORG_ID")
+			}
+		, inverseJoinColumns={
+			@JoinColumn(name="USER_ID")
+			}
+		)
+	private List<User> users;
+
+	//bi-directional many-to-one association to OrganizationSite
+	@OneToMany(mappedBy="organization")
+	@JsonIgnore
+	private List<OrganizationSite> organizationSites;
+
+	//bi-directional many-to-one association to OrganizationUser
+	@OneToMany(mappedBy="organization")
+	@JsonIgnore
+	private List<OrganizationUser> organizationUsers;
+
 	public Organization() {
 	}
 
-	public String getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -88,6 +131,14 @@ public class Organization implements Serializable {
 		this.name = name;
 	}
 
+	public String getSecretKey() {
+		return this.secretKey;
+	}
+
+	public void setSecretKey(String secretKey) {
+		this.secretKey = secretKey;
+	}
+
 	public String getUpdatedBy() {
 		return this.updatedBy;
 	}
@@ -102,6 +153,58 @@ public class Organization implements Serializable {
 
 	public void setUpdatedOn(Date updatedOn) {
 		this.updatedOn = updatedOn;
+	}
+
+	public List<User> getUsers() {
+		return this.users;
+	}
+
+	public void setUsers(List<User> users) {
+		this.users = users;
+	}
+
+	public List<OrganizationSite> getOrganizationSites() {
+		return this.organizationSites;
+	}
+
+	public void setOrganizationSites(List<OrganizationSite> organizationSites) {
+		this.organizationSites = organizationSites;
+	}
+
+	public OrganizationSite addOrganizationSite(OrganizationSite organizationSite) {
+		getOrganizationSites().add(organizationSite);
+		organizationSite.setOrganization(this);
+
+		return organizationSite;
+	}
+
+	public OrganizationSite removeOrganizationSite(OrganizationSite organizationSite) {
+		getOrganizationSites().remove(organizationSite);
+		organizationSite.setOrganization(null);
+
+		return organizationSite;
+	}
+
+	public List<OrganizationUser> getOrganizationUsers() {
+		return this.organizationUsers;
+	}
+
+	public void setOrganizationUsers(List<OrganizationUser> organizationUsers) {
+		this.organizationUsers = organizationUsers;
+	}
+
+	public OrganizationUser addOrganizationUser(OrganizationUser organizationUser) {
+		getOrganizationUsers().add(organizationUser);
+		organizationUser.setOrganization(this);
+
+		return organizationUser;
+	}
+
+	public OrganizationUser removeOrganizationUser(OrganizationUser organizationUser) {
+		getOrganizationUsers().remove(organizationUser);
+		organizationUser.setOrganization(null);
+
+		return organizationUser;
 	}
 
 }

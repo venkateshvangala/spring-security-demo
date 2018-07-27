@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -48,12 +49,27 @@ public class UserService {
 		}
 	}
 
+	public User updateUser(User user) {
+		User userModel = userRepository.findByEmailId(user.getEmailId());
+		userModel.setStatus(user.getStatus());
+		return userRepository.save(userModel);
+	}
+
 	public void delete(String username) {
 		userRepository.deleteByUserName(username);
 	}
 
 	public List<User> findAll() {
 		return userRepository.findAll();
+	}
+
+	public User fetchLoggedInUser() {
+		String emailId = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = userRepository.findByEmailId(emailId);
+		if (user == null) {
+			throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
+		}
+		return user;
 	}
 
 	public User search(String username) {

@@ -2,14 +2,20 @@ package com.getset.leaveservice.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * The persistent class for the user database table.
@@ -21,7 +27,8 @@ public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	private String id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
 	@Column(name = "CREATED_BY")
 	private String createdBy;
@@ -37,10 +44,10 @@ public class User implements Serializable {
 	private String firstName;
 
 	@Column(name = "IS_PWD_EXPIRED")
-	private byte isPwdExpired;
+	private boolean isPwdExpired;
 
 	@Column(name = "IS_USER_LOCKED")
-	private byte isUserLocked;
+	private boolean isUserLocked;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "LAST_LOGIN_AT")
@@ -60,7 +67,7 @@ public class User implements Serializable {
 
 	private String phone;
 
-	private byte status;
+	private boolean status;
 
 	@Column(name = "UPDATED_BY")
 	private String updatedBy;
@@ -69,18 +76,32 @@ public class User implements Serializable {
 	@Column(name = "UPDATED_ON")
 	private Date updatedOn;
 
-	@Column(name = "USER_NAME", unique = true, nullable = false)
-	@Size(min = 4, max = 255, message = "Minimum username length: 4 characters")
+	@Column(name = "USER_NAME")
 	private String userName;
+
+	// bi-directional many-to-many association to Organization
+	@ManyToMany(mappedBy = "users")
+	@JsonIgnore
+	private List<Organization> organizations;
+
+	// bi-directional many-to-one association to OrganizationUser
+	@OneToMany(mappedBy = "user")
+	@JsonIgnore
+	private List<OrganizationUser> organizationUsers;
+
+	// bi-directional many-to-one association to UserRole
+	@OneToMany(mappedBy = "user")
+	@JsonIgnore
+	private List<UserRole> userRoles;
 
 	public User() {
 	}
 
-	public String getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(String id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -116,19 +137,19 @@ public class User implements Serializable {
 		this.firstName = firstName;
 	}
 
-	public byte getIsPwdExpired() {
+	public boolean getIsPwdExpired() {
 		return this.isPwdExpired;
 	}
 
-	public void setIsPwdExpired(byte isPwdExpired) {
+	public void setIsPwdExpired(boolean isPwdExpired) {
 		this.isPwdExpired = isPwdExpired;
 	}
 
-	public byte getIsUserLocked() {
+	public boolean getIsUserLocked() {
 		return this.isUserLocked;
 	}
 
-	public void setIsUserLocked(byte isUserLocked) {
+	public void setIsUserLocked(boolean isUserLocked) {
 		this.isUserLocked = isUserLocked;
 	}
 
@@ -180,11 +201,11 @@ public class User implements Serializable {
 		this.phone = phone;
 	}
 
-	public byte getStatus() {
+	public boolean getStatus() {
 		return this.status;
 	}
 
-	public void setStatus(byte status) {
+	public void setStatus(boolean status) {
 		this.status = status;
 	}
 
@@ -210,6 +231,58 @@ public class User implements Serializable {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public List<Organization> getOrganizations() {
+		return this.organizations;
+	}
+
+	public void setOrganizations(List<Organization> organizations) {
+		this.organizations = organizations;
+	}
+
+	public List<OrganizationUser> getOrganizationUsers() {
+		return this.organizationUsers;
+	}
+
+	public void setOrganizationUsers(List<OrganizationUser> organizationUsers) {
+		this.organizationUsers = organizationUsers;
+	}
+
+	public OrganizationUser addOrganizationUser(OrganizationUser organizationUser) {
+		getOrganizationUsers().add(organizationUser);
+		organizationUser.setUser(this);
+
+		return organizationUser;
+	}
+
+	public OrganizationUser removeOrganizationUser(OrganizationUser organizationUser) {
+		getOrganizationUsers().remove(organizationUser);
+		organizationUser.setUser(null);
+
+		return organizationUser;
+	}
+
+	public List<UserRole> getUserRoles() {
+		return this.userRoles;
+	}
+
+	public void setUserRoles(List<UserRole> userRoles) {
+		this.userRoles = userRoles;
+	}
+
+	public UserRole addUserRole(UserRole userRole) {
+		getUserRoles().add(userRole);
+		userRole.setUser(this);
+
+		return userRole;
+	}
+
+	public UserRole removeUserRole(UserRole userRole) {
+		getUserRoles().remove(userRole);
+		userRole.setUser(null);
+
+		return userRole;
 	}
 
 }

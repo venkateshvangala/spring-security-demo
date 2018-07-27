@@ -1,8 +1,7 @@
 package com.getset.leaveservice.controller;
 
+import java.util.ArrayList;
 import java.util.List;
-
-import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +13,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.getset.leaveservice.dto.UserDataDTO;
-import com.getset.leaveservice.dto.UserResponseDTO;
+import com.getset.leaveservice.dto.OrganizationDTO;
+import com.getset.leaveservice.dto.UserDTO;
+import com.getset.leaveservice.entity.Organization;
 import com.getset.leaveservice.entity.User;
+import com.getset.leaveservice.entity.UserRole;
 import com.getset.leaveservice.service.UserService;
 
 @RestController
@@ -25,22 +26,42 @@ public class AuthController {
 
 	@Autowired
 	private UserService userService;
-	
+
 	@Autowired
 	private ModelMapper modelMapper;
-	
-	@GetMapping("/get_users")
-	public List<User> getAllUsers() {
-		return userService.findAll();
+
+	@GetMapping("/fetch_users")
+	public List<UserDTO> getAllUsers() {
+		List<User> users = userService.findAll();
+		List<UserDTO> userDTO = new ArrayList<UserDTO>();
+		for (User user : users) {
+			UserDTO userDto = modelMapper.map(user, UserDTO.class);
+			List<OrganizationDTO> orgDTOs = new ArrayList<>();
+			for(Organization org: user.getOrganizations()) {
+				orgDTOs.add(modelMapper.map(org, OrganizationDTO.class));
+			}
+			List<UserRole> userRoles = new ArrayList<>();
+			for(UserRole role: user.getUserRoles()) {
+				userRoles.add(modelMapper.map(role, UserRole.class));
+			}
+			userDto.setOrganizations(orgDTOs);
+			userDto.setUserRoles(userRoles);
+			userDTO.add(userDto);
+		}
+		
+		
+		
+		
+		return userDTO;
 	}
 
 	@PostMapping("/signin")
-	public String login(@RequestBody UserDataDTO user) {
+	public String login(@RequestBody UserDTO user) {
 		return userService.signin(user.getUserName(), user.getPassword());
 	}
 
 	@PostMapping(path = "/signup")
-	public User signup(@RequestBody UserDataDTO user) {
+	public User signup(@RequestBody UserDTO user) {
 		return userService.signup(modelMapper.map(user, User.class));
 	}
 
@@ -50,13 +71,4 @@ public class AuthController {
 		return username;
 	}
 
-	@GetMapping(value = "/{username}")
-	public UserResponseDTO search(@PathVariable String username) {
-		return modelMapper.map(userService.search(username), UserResponseDTO.class);
-	}
-
-	@GetMapping(value = "/me")
-	public UserResponseDTO whoami(HttpServletRequest req) {
-		return modelMapper.map(userService.whoami(req), UserResponseDTO.class);
-	}
 }

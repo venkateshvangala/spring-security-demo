@@ -38,6 +38,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()//
 				.antMatchers("/auth/signin").permitAll()
 				.antMatchers("/auth/signup").permitAll()
+				.antMatchers("/home/*").permitAll()
+				.antMatchers("/assets/*").permitAll()
 				.anyRequest().authenticated();// Disallow everything else..
 
 		// If a user try to access a resource without having enough permissions

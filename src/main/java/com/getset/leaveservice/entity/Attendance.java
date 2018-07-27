@@ -12,96 +12,65 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+
 /**
  * The persistent class for the attendance database table.
  * 
  */
 @Entity
-@NamedQuery(name = "Attendance.findAll", query = "SELECT a FROM Attendance a")
+@NamedQuery(name="Attendance.findAll", query="SELECT a FROM Attendance a")
 public class Attendance implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id", updatable = false, nullable = false)
-	private int id;
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private long id;
 
-	@Column(name = "CREATED_BY")
+	@Column(name="CREATED_BY")
 	private String createdBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "CREATED_ON")
+	@Column(name="CREATED_ON")
 	private Date createdOn;
 
-	@Column(name = "EMAIL_ID")
+	@Column(name="EMAIL_ID")
 	private String emailId;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LOG_IN")
+	@Column(name="LOG_IN")
 	private Date logIn;
 
+	@Column(name="LOG_IN_LAG")
+	private String logInLag;
+
+	@Column(name="LOG_IN_LAT")
+	private String logInLat;
+
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "LOG_OUT")
+	@Column(name="LOG_OUT")
 	private Date logOut;
 
-	@Column(name = "UPDATED_BY")
+	@Column(name="LOG_OUT_LAG")
+	private String logOutLag;
+
+	@Column(name="LOG_OUT_LAT")
+	private String logOutLat;
+
+	@Column(name="UPDATED_BY")
 	private String updatedBy;
 
 	@Temporal(TemporalType.TIMESTAMP)
-	@Column(name = "UPDATED_ON")
+	@Column(name="UPDATED_ON")
 	private Date updatedOn;
-	
-	@Column(name = "LOG_IN_LAT")
-	private String logInLat;
-	
-	@Column(name = "LOG_IN_LAG")
-	private String logInLag;
-	
-	@Column(name = "LOG_OUT_LAT")
-	private String logOutLat;
-	
-	@Column(name = "LOG_OUT_LAG")
-	private String logOutLag;
 
-	public String getLogInLat() {
-		return logInLat;
+	public Attendance() {
 	}
 
-	public void setLogInLat(String logInLat) {
-		this.logInLat = logInLat;
-	}
-
-	public String getLogInLag() {
-		return logInLag;
-	}
-
-	public void setLogInLag(String logInLag) {
-		this.logInLag = logInLag;
-	}
-
-	public String getLogOutLat() {
-		return logOutLat;
-	}
-
-	public void setLogOutLat(String logOutLat) {
-		this.logOutLat = logOutLat;
-	}
-
-	public String getLogOutLag() {
-		return logOutLag;
-	}
-
-	public void setLogOutLag(String logOutLag) {
-		this.logOutLag = logOutLag;
-	}
-
-	public Attendance() { }
-
-	public int getId() {
+	public long getId() {
 		return this.id;
 	}
 
-	public void setId(int id) {
+	public void setId(long id) {
 		this.id = id;
 	}
 
@@ -137,12 +106,44 @@ public class Attendance implements Serializable {
 		this.logIn = logIn;
 	}
 
+	public String getLogInLag() {
+		return this.logInLag;
+	}
+
+	public void setLogInLag(String logInLag) {
+		this.logInLag = logInLag;
+	}
+
+	public String getLogInLat() {
+		return this.logInLat;
+	}
+
+	public void setLogInLat(String logInLat) {
+		this.logInLat = logInLat;
+	}
+
 	public Date getLogOut() {
 		return this.logOut;
 	}
 
 	public void setLogOut(Date logOut) {
 		this.logOut = logOut;
+	}
+
+	public String getLogOutLag() {
+		return this.logOutLag;
+	}
+
+	public void setLogOutLag(String logOutLag) {
+		this.logOutLag = logOutLag;
+	}
+
+	public String getLogOutLat() {
+		return this.logOutLat;
+	}
+
+	public void setLogOutLat(String logOutLat) {
+		this.logOutLat = logOutLat;
 	}
 
 	public String getUpdatedBy() {
